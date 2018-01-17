@@ -36,55 +36,29 @@ public class GameSession
         {
             for(j=0;j<width;j++)
             {
-                //ww -fal       
-                //wb -felfal fentball
-                //wd -felfal fentjobb
-                //wp -felfal lentball
-                //wq -felfal lentjobb
-                //"  " -levego
-                //sz -szabi
-                //de -denia
-
-                //fp -festekVederPiros
-                //fz -festekVederZold
-                //fk -festekVederKek
-                //fl -festekVederLila
-                //ff -festekVederFekete
-
-                //ps -pirosSziv
-                //zs -zoldSziv
-                //ks -kekSziv
-                //ls -lilaSziv
-                //fs -feketeSziv
-
-                //ns -nagySziv
-                //la -lajtorja
+                //w -fal       
+                //i -iza
+                //t- tibi
+                //h -sziv
+                //g -cel
                 
                 GameObject gameObject=null;                
                 switch(matrix[i][j])
                 {
-                    case "ww":
-                    case "wb":
-                    case "wd":
-                    case "wp":    
-                    case "wq":
-                        gameObject=new Wall(matrix[i][j]);
+                    case "w":
+                        gameObject=new Wall();
                         break;
-                    case "ps":
-                    case "zs":
-                    case "ks":
-                    case "ls":    
-                    case "fs":
-                        gameObject=new Heart(matrix[i][j]);
+                    case "h":
+                        gameObject=new Heart();
                         break;
-                    case "de":
-                    case "sz":
+                    case "t":
+                    case "i":
                         gameObject=new MainActor(matrix[i][j]);
                         this.mainActor=(MainActor)gameObject;
                         this.mainActor.setCurrentX(25);
                         this.mainActor.setCurrentY(25);
                         break;                   
-                    case "  ":
+                    case " ":
                         gameObject=new Air();
                         break;
                 }

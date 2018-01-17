@@ -18,12 +18,4 @@ public class Enums
         Jobbra,
         Balra     
     }
-    
-    public enum Color
-    {
-        Red,
-        Green,
-        Blue,
-        Purple     
-    }
 }

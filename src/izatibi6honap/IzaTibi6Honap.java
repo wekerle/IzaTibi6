@@ -5,8 +5,8 @@
  */
 package izatibi6honap;
 
-import Listener.LevelFinishedEventListener;
-import Listener.LevelSelectedEventListener;
+import Listeners.LevelFinishedEventListener;
+import Listeners.LevelSelectedEventListener;
 import Models.AplicationModel;
 import Models.GameSession;
 import ViewModels.GameSessionView;
@@ -194,23 +194,7 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
         
     private GridPane getContent() 
     {
-        GridPane grid = new GridPane();   
-        
-       /* int i=0;
-        int j=0;
-        for(LevelModel level :aplicationModel.getLevels())
-        {
-            MinimalLevelView minimalLevel= new MinimalLevelView(level.getLevelId(), level.getLevelNumber(),aplicationModel.getMaxSolvedLevel());
-            minimalLevel.setLevelSelectedEventListener(this);
-            grid.add(minimalLevel,j,i);
-            
-            j++;
-            if(j==6)
-            {
-                i++;
-                j=0;
-            }
-        }*/
+        GridPane grid = new GridPane();          
         grid.setHgap(25);
         grid.setVgap(25);
         grid.setPadding(new Insets(20, 10, 10, 50));

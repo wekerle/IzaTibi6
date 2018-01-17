@@ -22,35 +22,15 @@ public class MainActor extends GameObject{
     private Image image=null;
     private Path path= null;
     private int numberOfStepsInPath=0;
-    private Helpers.Enums.Color color=null;
-    private int colectedBigHearts=0;
-    private boolean lose=false;
-    
-    private boolean checkLevelFailed(int i, int j)
-    {
-        if(i<0 || i>=this.gameSession.getHeight())
-        {
-            this.lose=true;
-            return true;
-        }
-        
-        if(j<0 || j>=this.gameSession.getWidth())
-        {
-            this.lose=true;
-            return true;
-        }
-        
-        return false;
-    }
     
     public MainActor(String cod)
     {
         switch(cod)
         {
-            case "sz":
+            case "t":
                 image=new Image("/img/szabi.png");
                 break;
-            case "de":
+            case "i":
                 image=new Image("/img/denia.png");
                 break;
         }
@@ -193,10 +173,7 @@ public class MainActor extends GameObject{
                 j--;
                 break;
         }
-        if(checkLevelFailed(i, j))
-        {
-            return null;
-        }
+        
         return gameSession.getGameObjectAt(i,j);
     }
     
@@ -244,80 +221,8 @@ public class MainActor extends GameObject{
         this.numberOfStepsInPath=0;
     }
     
-    public Helpers.Enums.Direction getNewDirection(Helpers.Enums.Direction oldDirection,String cod)
-    {      
-        Helpers.Enums.Direction newDirection=null;          
-           switch(cod){
-                case "ww":
-                    newDirection=null;
-                   break;
-                case "wd":
-                    if(oldDirection==Helpers.Enums.Direction.Jobbra)
-                    {
-                        newDirection=Enums.Direction.Fel;
-                    }else if(oldDirection==Enums.Direction.Le)
-                    {
-                        newDirection=Enums.Direction.Balra;
-                    }
-                   break;
-                case "wb":
-                    if(oldDirection==Helpers.Enums.Direction.Balra)
-                    {
-                        newDirection=Enums.Direction.Fel;
-                    }else if(oldDirection==Enums.Direction.Le)
-                    {
-                        newDirection=Enums.Direction.Jobbra;
-                    }
-                   break;
-                case "wp":
-                    if(oldDirection==Helpers.Enums.Direction.Balra)
-                    {
-                        newDirection=Enums.Direction.Le;
-                    }else if(oldDirection==Enums.Direction.Fel)
-                    {
-                        newDirection=Enums.Direction.Jobbra;
-                    }
-                   break;
-                case "wq":
-                    if(oldDirection==Helpers.Enums.Direction.Jobbra)
-                    {
-                        newDirection=Enums.Direction.Le;
-                    }else if(oldDirection==Enums.Direction.Fel)
-                    {
-                        newDirection=Enums.Direction.Balra;
-                    }
-                   break;
-           }
-        return newDirection;
-    }
-    
-    public void setColor(Helpers.Enums.Color color)
-    {
-        this.color=color;
-    }
-    
-    public Helpers.Enums.Color getColor()
-    {
-        return this.color;
-    }
-    
-    public void addColectedBigHeart()
-    {
-        colectedBigHearts++;
-    }
-    
-    public boolean allHeartsColected()
-    {
-        return this.colectedBigHearts==3;
-    }
-    
     public int numberOfStepsInPath()
     {
         return this.numberOfStepsInPath;
-    }
-    
-    public boolean getLose()
-    {
-        return this.lose;
     }
 }

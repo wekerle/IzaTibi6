@@ -6,7 +6,7 @@
 package ViewModels;
 
 import Helpers.Enums;
-import Listener.LevelFinishedEventListener;
+import Listeners.LevelFinishedEventListener;
 import Models.GameObject;
 import Models.GameSession;
 import java.util.ArrayList;
@@ -47,14 +47,6 @@ public class GameSessionView extends VBox{
     private ArrayList<ImageView> imageViewBigHearts=new ArrayList<ImageView>();
     private PathTransition pathTransition = new PathTransition();
     private LevelFinishedEventListener levelFinishedEvent=null;
-    
-    private Image miniBucketRed=new Image("img/pirosVederMini.png");
-    private Image miniBucketBlue=new Image("img/kekVederMini.png");
-    private Image miniBucketPurple=new Image("img/lilaVederMini.png");
-    private Image miniBucketGreen=new Image("img/zoldVederMini.png");
-    private Image miniBucketNoColor=new Image("img/noColorMini.png");
-    
-    private ImageView imageViewCurrentColor=new ImageView(miniBucketNoColor);
     
     public void setLevelFinishedEventListener(LevelFinishedEventListener levelFinishedEvent) 
     {
@@ -140,7 +132,6 @@ public class GameSessionView extends VBox{
         HBox hBoxTop= new HBox();
         hBoxTop.getChildren().add(textLevel);
          hBoxTop.getChildren().add(textColor);
-        hBoxTop.getChildren().add(imageViewCurrentColor);
 
         hBoxTop.setSpacing(5);
         
@@ -188,24 +179,5 @@ public class GameSessionView extends VBox{
         {
             levelFinishedEvent.levelFinished(this.gameSession.getLevelNumber());
         }*/
-    }
-    
-    private void setCurrentColor(Helpers.Enums.Color color)
-    {
-        switch(color)
-        {
-            case Red:
-                this.imageViewCurrentColor.setImage(miniBucketRed);
-                break;
-            case Blue:
-                this.imageViewCurrentColor.setImage(miniBucketBlue);
-                break;
-            case Green:
-                this.imageViewCurrentColor.setImage(miniBucketGreen);
-                break;
-            case Purple:
-                this.imageViewCurrentColor.setImage(miniBucketPurple);
-                break;
-        }
-    }
+    }   
 }

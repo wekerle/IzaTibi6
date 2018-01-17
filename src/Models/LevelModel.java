@@ -36,6 +36,5 @@ public class LevelModel implements Serializable{
     public int getLevelNumber() 
     {
         return levelNumber;
-    }
-    
+    }   
 }

@@ -14,38 +14,15 @@ import javafx.scene.image.Image;
 public class Wall extends GameObject{
 
     private Image image=null;
-    private String cod;
     
-    public Wall(String cod)
+    public Wall()
     {
-        this.cod=cod;
-        switch(cod){
-            case "ww":
-                image=new Image("/img/fal.png");
-                break;
-            case "wb":
-                image=new Image("/img/falFentJobb.png");
-                break;
-            case "wd":
-                image=new Image("/img/falFentBal.png");
-                break;
-            case "wp":
-                image=new Image("/img/falLentJobb.png");
-                break;
-            case "wq":
-                image=new Image("/img/falLentBal.png");
-                break;
-        }
+        image=new Image("/img/fal.png");
     }
     
     @Override
     public Image getImage() 
     {
         return image;
-    }
-    
-    public String getCode()
-    {
-        return this.cod;
     }
 }
