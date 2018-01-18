@@ -9,7 +9,9 @@ import Listeners.LevelFinishedEventListener;
 import Listeners.LevelSelectedEventListener;
 import Models.AplicationModel;
 import Models.GameSession;
+import Models.LevelModel;
 import ViewModels.GameSessionView;
+import ViewModels.MinimalLevelView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -60,8 +62,8 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
     
         scene.getStylesheets().add("Styling/styles.css");
                                                      
-        primaryStage.setWidth(850);
-        primaryStage.setHeight(680);
+        primaryStage.setWidth(825);
+        primaryStage.setHeight(700);
         
         primaryStage.setTitle("Iza & Tibi");
         primaryStage.setScene(scene);
@@ -194,9 +196,26 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
         
     private GridPane getContent() 
     {
-        GridPane grid = new GridPane();          
-        grid.setHgap(25);
-        grid.setVgap(25);
+        GridPane grid = new GridPane();  
+        
+        int i=0;
+        int j=0;
+        for(LevelModel level :aplicationModel.getLevels())
+        {
+            MinimalLevelView minimalLevel= new MinimalLevelView(level.getLevelId(), level.getLevelNumber(),aplicationModel.getMaxSolvedLevel());
+            minimalLevel.setLevelSelectedEventListener(this);
+            grid.add(minimalLevel,j,i);
+
+            j++;
+            if(j==3)
+            {
+                i++;
+                j=0;
+            }
+        }  
+                
+       // grid.setHgap(25);
+       // grid.setVgap(25);
         grid.setPadding(new Insets(20, 10, 10, 50));
         return grid;
     }
@@ -209,9 +228,9 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
             start(stage);
         }else
         {
-           /* LevelModel level=aplicationModel.getLevelByNr(levelNr);
+            LevelModel level=aplicationModel.getLevelByNr(levelNr);
             GameSession gameSession=new GameSession(level);
-            renderLevel(gameSession);*/
+            renderLevel(gameSession);
         }       
     }
 
