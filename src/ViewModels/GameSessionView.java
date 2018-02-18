@@ -9,27 +9,21 @@ import Helpers.Enums;
 import Listeners.LevelFinishedEventListener;
 import Models.GameObject;
 import Models.GameSession;
+import Models.Goal;
+import Models.Heart;
+import Models.Wall;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.animation.Animation;
+import javafx.animation.ParallelTransition;
 import javafx.animation.PathTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
+import javafx.animation.TranslateTransition;
 import javafx.event.EventHandler;
-import javafx.geometry.BoundingBox;
-import javafx.geometry.Bounds;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Path;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 /**
@@ -38,7 +32,7 @@ import javafx.util.Duration;
  */
 public class GameSessionView extends VBox{
     private GridPane grid=new GridPane();
-    private int fromAngel=0,toAngel = 0,height=0,width;
+    private int height=0,width;
     private GameSession gameSession=null;
     private HashMap<GameObject,ImageView> gameObjectImageViewMap=new HashMap<GameObject,ImageView>();
     private HashMap<ImageView,GameObject> imageViewGameObjectMap=new HashMap<ImageView,GameObject>();
@@ -85,20 +79,13 @@ public class GameSessionView extends VBox{
                     }
                     if(direction !=null)
                     {                        
-                        simulateNextStep(direction);                   
+                        GameSessionView.this.simulateNextStepOnView(direction);                   
                     }
                 }                
             }
         });
     }   
-    
-    private void simulateNextStep(Helpers.Enums.Direction direction)
-    {
-       // gameSession.getSzabiDenia().destroyPath();
-      //  Path path=gameSession.constrcutPath(direction);
-       // GameSessionView.this.simulateNextStepOnView(path);       
-    }
-    
+        
     private void populateContent()
     {
         height=gameSession.getHeight();
@@ -113,8 +100,7 @@ public class GameSessionView extends VBox{
                 
                 if(gameObject!=null)
                 {
-                    imageView.setImage(gameSession.getGameObjectAt(i, j).getImage());
-                    
+                    imageView.setImage(gameSession.getGameObjectAt(i, j).getImage());                   
                 }
                                 
                 grid.add(imageView,j,i);
@@ -122,55 +108,75 @@ public class GameSessionView extends VBox{
                 imageViewGameObjectMap.put(imageView,gameObject);
             }
         }
-        
-        Text textLevel=new Text("Level: "+ gameSession.getLevelNumber());
-        textLevel.setFont(Font.font("TimesNewRoman",FontWeight.BOLD,24));
-        
-        Text textColor=new Text("Color: ");
-        textColor.setFont(Font.font("TimesNewRoman",FontWeight.BOLD,24));
-                       
-        HBox hBoxTop= new HBox();
-        hBoxTop.getChildren().add(textLevel);
-         hBoxTop.getChildren().add(textColor);
 
-        hBoxTop.setSpacing(5);
-        
-        this.getChildren().add(hBoxTop);
         this.getChildren().add(grid);       
     }
     
-    private void simulateNextStepOnView(Path path)
+    private void simulateNextStepOnView(Enums.Direction direction)
     {
-       /* GameObject szabiDenia=gameSession.getSzabiDenia();
-        ImageView szabiDeniaImageView=gameObjectImageViewMap.get(szabiDenia);
-        szabiDeniaImageView.toFront();
+        GameObject mainActor=gameSession.getMainActor();
+        ImageView mainActorImageView=gameObjectImageViewMap.get(mainActor);
+        mainActorImageView.toFront();
         
-        long durationInMillis=((SzabiDenia)szabiDenia).numberOfStepsInPath()*100;
+        GameObject neighbor = mainActor.getNeighbor(direction);
         
-        pathTransition.setDuration(Duration.millis(durationInMillis));
-        pathTransition.setPath(path);
-        pathTransition.setNode(szabiDeniaImageView);
-        pathTransition.setCycleCount(1);
-        pathTransition.play();
-                
-        pathTransition.setOnFinished(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                checkWin();
-            }
-        });
+        ParallelTransition parallelTransition=new ParallelTransition();
+        if(!(neighbor instanceof Wall)){
+            if(neighbor instanceof Goal){
+                Goal goal=((Goal)(neighbor));
+                if(goal.getObject()!=null){
+                    GameObject secondNeighbor = neighbor.getNeighbor(direction);
+                    if(!(secondNeighbor instanceof Wall) && !(secondNeighbor instanceof Heart)&& !(secondNeighbor instanceof Goal && ((Goal)(secondNeighbor)).getObject()!=null)){
+                        parallelTransition.getChildren().add(getTranslateTransition(direction, goal.getObject()));
+                        parallelTransition.getChildren().add(getTranslateTransition(direction, mainActor)); 
+                    }
+                }else{
+                    parallelTransition.getChildren().add(getTranslateTransition(direction, mainActor));
+                }
+            }else if(neighbor instanceof Heart){
+                GameObject secondNeighbor = neighbor.getNeighbor(direction);
+                if(!(secondNeighbor instanceof Wall) && !(secondNeighbor instanceof Heart) && !(secondNeighbor instanceof Goal && ((Goal)(secondNeighbor)).getObject()!=null)){
+                    parallelTransition.getChildren().add(getTranslateTransition(direction, neighbor));
+                    parallelTransition.getChildren().add(getTranslateTransition(direction, mainActor));
+                }
+            }else{
+                parallelTransition.getChildren().add(getTranslateTransition(direction, mainActor));
+            }          
+        }
         
-        szabiDeniaImageView.boundsInParentProperty().addListener(new ChangeListener<Bounds>() {
-            @Override
-            public void changed(ObservableValue<? extends Bounds> observable,
-                    Bounds oldValue, Bounds newValue) {
-                
-                    Bounds boundsInParent = szabiDeniaImageView.getBoundsInParent();
-                    Bounds actualBounds = new BoundingBox(boundsInParent.getMinX()+1, boundsInParent.getMinY()+1,
-                    boundsInParent.getWidth()-2, boundsInParent.getHeight()-2);
-                
-            }
-        }); */             
+       parallelTransition.play();                     
+    }
+    
+    private TranslateTransition getTranslateTransition(Enums.Direction direction, GameObject object){
+        ImageView objectImageView=gameObjectImageViewMap.get(object);
+        TranslateTransition translateTransition =new TranslateTransition(Duration.millis(100),objectImageView);
+            int newI=object.getCurrentI();
+            int newJ=object.getCurrentJ();
+            switch(direction){
+               case Le: 
+                    translateTransition.setByY(50);
+                    newI++;
+                   break;
+               case Fel: 
+                   translateTransition.setByY(-50);
+                   newI--;
+                   break;
+               case Jobbra: 
+                   translateTransition.setByX(50);
+                   newJ++;
+                   break;
+               case Balra: 
+                   translateTransition.setByX(-50);
+                   newJ--;
+                   break;
+           }
+            
+        this.gameSession.simulateMoveOnSession(object,newI,newJ);  
+        object.setCurrentI(newI);
+        object.setCurrentJ(newJ);
+        translateTransition.setCycleCount(1);
+         
+         return translateTransition;
     }
         
     private void checkWin()

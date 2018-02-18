@@ -20,18 +20,14 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -62,7 +58,7 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
     
         scene.getStylesheets().add("Styling/styles.css");
                                                      
-        primaryStage.setWidth(825);
+        primaryStage.setWidth(900);
         primaryStage.setHeight(700);
         
         primaryStage.setTitle("Iza & Tibi");
@@ -219,7 +215,7 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
         grid.setPadding(new Insets(20, 10, 10, 50));
         return grid;
     }
-
+    
     @Override
     public void levelSelected(int levelNr) 
     {

@@ -1,7 +1,5 @@
 package Models;
 
-import javafx.scene.shape.Path;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -12,7 +10,7 @@ import javafx.scene.shape.Path;
  *
  * @author Ronaldo
  */
-public class GameSession 
+public class GameSession
 {
     private GameObject[][] objects=null;
     private int levelNumber;
@@ -51,12 +49,13 @@ public class GameSession
                     case "h":
                         gameObject=new Heart();
                         break;
+                    case "g":
+                        gameObject=new Goal();
+                        break;
                     case "t":
                     case "i":
                         gameObject=new MainActor(matrix[i][j]);
                         this.mainActor=(MainActor)gameObject;
-                        this.mainActor.setCurrentX(25);
-                        this.mainActor.setCurrentY(25);
                         break;                   
                     case " ":
                         gameObject=new Air();
@@ -90,21 +89,32 @@ public class GameSession
         return mainActor;
     }
     
-    public void simulateNextStepOnSession(int numberStepsI,int numberStepsJ,Helpers.Enums.Direction direction)
+    public void simulateMoveOnSession(GameObject gameObject,int newI,int newJ)
     {
-        if(numberStepsI==0 && numberStepsJ==0)
-        {
-            return;
+        int i=gameObject.getCurrentI();
+        int j=gameObject.getCurrentJ();
+        GameObject temp=objects[newI][newJ];
+        if(temp instanceof Air && objects[i][j] instanceof Goal){
+            objects[newI][newJ]=gameObject;
+            ((Goal)objects[i][j]).setObject(null);
+        }else if(temp instanceof Goal){
+            ((Goal)temp).setObject(gameObject);
+            if(!(objects[i][j] instanceof Goal)){
+                objects[i][j]=new Air();
+            }else{
+                ((Goal)objects[i][j]).setObject(null);
+            }          
+        }else{
+            if(objects[i][j] instanceof Goal){
+                objects[newI][newJ]=gameObject;
+            }else{
+                objects[newI][newJ]=objects[i][j];
+                objects[i][j]=temp;
+            }
         }
-        int i=mainActor.getCurrentI();
-        int j=mainActor.getCurrentJ();
-        GameObject temp=objects[i][j];
-        objects[i][j]=objects[i+numberStepsI][j+numberStepsJ];
-        objects[i+numberStepsI][j+numberStepsJ]=temp;
+    } 
+
+    public void addObject(GameObject object) {
+        objects[object.currentI][object.currentJ]=object;
     }
-        
-    public Path constrcutPath(Helpers.Enums.Direction direction)
-    {
-        return mainActor.constructPath(direction);
-    }
-}
+}      

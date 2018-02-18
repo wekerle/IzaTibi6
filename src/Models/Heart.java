@@ -17,7 +17,7 @@ public class Heart extends GameObject{
     
     public Heart()
     {
-        image=new Image("/img/pirosSzivUres.png");
+        image=new Image("/img/szivTeli.png");
     }
     
     @Override

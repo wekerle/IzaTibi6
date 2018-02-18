@@ -1,6 +1,7 @@
 package Models;
 
 
+import Helpers.Enums;
 import javafx.scene.image.Image;
 
 /*
@@ -13,24 +14,14 @@ import javafx.scene.image.Image;
  *
  * @author Ronaldo
  */
-public abstract class GameObject 
+public abstract class GameObject
 {
     protected GameSession gameSession=null;
-    protected int currentX,currentY,currentI,currentJ;
+    protected int currentI,currentJ;
 
     public void setGameSession(GameSession gameSession) 
     {
         this.gameSession = gameSession;
-    }
-
-    public int getCurrentX() 
-    {
-        return currentX;
-    }
-
-    public void setCurrentX(int currentX) 
-    {
-        this.currentX = currentX;
     }
     
     public int getCurrentI() 
@@ -38,9 +29,9 @@ public abstract class GameObject
         return currentI;
     }
 
-    public void setCurrentI(int currentI) 
+    public void setCurrentI(int newI) 
     {
-        this.currentI = currentI;
+        this.currentI = newI;
     }
     
     public int getCurrentJ() 
@@ -48,19 +39,31 @@ public abstract class GameObject
         return currentJ;
     }
 
-    public void setCurrentJ(int currentJ) 
+    public void setCurrentJ(int newJ) 
     {
-        this.currentJ = currentJ;
+        this.currentJ = newJ;
     }
-
-    public int getCurrentY() 
-    {
-        return currentY;
-    }
-
-    public void setCurrentY(int currentY) 
-    {
-        this.currentY = currentY;
+    
+    public GameObject getNeighbor(Enums.Direction direction)
+    {       
+        int tempI=this.currentI,tempJ=this.currentJ;
+        switch(direction)
+        {
+            case Fel:
+                tempI--;
+                break;
+            case Le:
+                tempI++;
+                break;
+            case Jobbra:
+                tempJ++;
+                break;
+            case Balra:
+                tempJ--;
+                break;
+        }
+        
+        return gameSession.getGameObjectAt(tempI,tempJ);
     }
     
     public abstract Image getImage();

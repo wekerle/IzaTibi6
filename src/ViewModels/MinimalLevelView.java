@@ -68,7 +68,7 @@ public class MinimalLevelView extends HBox{
         }else
         {
             imageView=new ImageView(new Image("/img/denied.png"));
-            this.getStyleClass().add("disabledMinimalLevelView");
+          //  this.getStyleClass().add("disabledMinimalLevelView");
         }
                 
         this.getChildren().add(imageView);

@@ -11,26 +11,27 @@ import javafx.scene.image.Image;
  *
  * @author tibor.wekerle
  */
-public class MainActor extends GameObject{
+public class Goal extends GameObject{
 
     private Image image=null;
+    private GameObject object=null;
     
-    public MainActor(String cod)
+    public Goal()
     {
-        switch(cod)
-        {
-            case "t":
-                image=new Image("/img/tibi.png");
-                break;
-            case "i":
-                image=new Image("/img/iza.png");
-                break;
-        }
+        image=new Image("/img/szivUres.png");
     }
     
     @Override
     public Image getImage() 
     {
         return image;
-    }           
+    }
+
+    public GameObject getObject() {
+        return object;
+    }
+
+    public void setObject(GameObject object) {
+        this.object = object;
+    } 
 }
