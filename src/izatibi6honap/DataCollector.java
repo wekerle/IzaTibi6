@@ -191,4 +191,17 @@ public class DataCollector
         return levels;
     }
     
+        public ArrayList<String> getMusics(){
+        ArrayList result=new ArrayList();
+
+        result.add("/media/EdSheeranPerfect.mp3");    
+        result.add("/media/JuliaMichalesHeaven.mp3");
+        result.add("/media/LauvILikeMeBetter.mp3");
+        result.add("/media/LiamPayneRitaOra.mp3");
+        result.add("/media/TheWeekendEarnedIt.mp3");
+        result.add("/media/RudimentalTheseDays.mp3"); 
+        
+        return result;
+    }
+    
 }

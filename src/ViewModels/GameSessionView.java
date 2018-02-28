@@ -11,13 +11,14 @@ import Models.GameObject;
 import Models.GameSession;
 import Models.Goal;
 import Models.Heart;
+import Models.MainActor;
 import Models.Wall;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.animation.Animation;
 import javafx.animation.ParallelTransition;
-import javafx.animation.PathTransition;
 import javafx.animation.TranslateTransition;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -35,11 +36,8 @@ public class GameSessionView extends VBox{
     private int height=0,width;
     private GameSession gameSession=null;
     private HashMap<GameObject,ImageView> gameObjectImageViewMap=new HashMap<GameObject,ImageView>();
-    private HashMap<ImageView,GameObject> imageViewGameObjectMap=new HashMap<ImageView,GameObject>();
-    private ArrayList<ImageView> imageViewHearts=new ArrayList<ImageView>();
-    private ArrayList<ImageView> imageViewPaintBuckets=new ArrayList<ImageView>();
-    private ArrayList<ImageView> imageViewBigHearts=new ArrayList<ImageView>();
-    private PathTransition pathTransition = new PathTransition();
+    private ArrayList<Goal> goals=new ArrayList<Goal>();
+    private ParallelTransition parallelTransition = new ParallelTransition();
     private LevelFinishedEventListener levelFinishedEvent=null;
     
     public void setLevelFinishedEventListener(LevelFinishedEventListener levelFinishedEvent) 
@@ -58,7 +56,7 @@ public class GameSessionView extends VBox{
             @Override
             public void handle(KeyEvent event) 
             {
-                if(pathTransition.getStatus()==Animation.Status.STOPPED)
+                if(parallelTransition.getStatus()==Animation.Status.STOPPED)
                 {
                     Helpers.Enums.Direction direction=null;
                     if (event.getCode() == KeyCode.DOWN) 
@@ -105,7 +103,10 @@ public class GameSessionView extends VBox{
                                 
                 grid.add(imageView,j,i);
                 gameObjectImageViewMap.put(gameObject, imageView);
-                imageViewGameObjectMap.put(imageView,gameObject);
+                if(gameObject instanceof Goal){
+                    goals.add((Goal)gameObject);
+                    imageView.toBack();
+                }
             }
         }
 
@@ -120,7 +121,7 @@ public class GameSessionView extends VBox{
         
         GameObject neighbor = mainActor.getNeighbor(direction);
         
-        ParallelTransition parallelTransition=new ParallelTransition();
+        parallelTransition=new ParallelTransition();
         if(!(neighbor instanceof Wall)){
             if(neighbor instanceof Goal){
                 Goal goal=((Goal)(neighbor));
@@ -144,7 +145,13 @@ public class GameSessionView extends VBox{
             }          
         }
         
-       parallelTransition.play();                     
+       parallelTransition.play();       
+       parallelTransition.setOnFinished(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                checkWin();
+            }
+        });
     }
     
     private TranslateTransition getTranslateTransition(Enums.Direction direction, GameObject object){
@@ -181,9 +188,15 @@ public class GameSessionView extends VBox{
         
     private void checkWin()
     {
-       /* if(isAllColored() &&  gameSession.getSzabiDenia().allHeartsColected())
+        boolean result=true;
+        for(Goal item:goals){
+            if(item.getObject()==null || item.getObject() instanceof MainActor){
+                result=false;
+            }
+        }
+        if(result)
         {
             levelFinishedEvent.levelFinished(this.gameSession.getLevelNumber());
-        }*/
+        }
     }   
 }

@@ -18,6 +18,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Random;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.geometry.Insets;
@@ -28,6 +31,8 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -42,7 +47,9 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
     private AplicationModel aplicationModel=new AplicationModel();
     private Scene scene=new Scene(borderPane);
     private Stage stage=null;
-    public static final int FINAL_LEVEL_NR=30;
+    public static final int FINAL_LEVEL_NR=9;
+    private boolean isMusicPlaying=false;
+    private ArrayList<MediaPlayer> players=new ArrayList<MediaPlayer>();
     
     @Override
     public void start(Stage primaryStage) 
@@ -52,7 +59,6 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
         
         MenuBar menuBar=createMenu();       
         borderPane.setTop(menuBar);  
-        //levelFinished(30);
         borderPane.setCenter(getContent());
         stage=primaryStage;
     
@@ -63,7 +69,13 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
         
         primaryStage.setTitle("Iza & Tibi");
         primaryStage.setScene(scene);
-        primaryStage.show();                
+        primaryStage.show();      
+                      
+        if(!this.isMusicPlaying){
+            this.isMusicPlaying=true;
+            initMusic();
+            players.get(0).play();
+        }
     }    
     /**
      * @param args the command line arguments
@@ -74,6 +86,36 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
         launch(args);
     }
     
+    private void initMusic(){
+        ArrayList<String> musics=new DataCollector().getMusics();
+        for(int i=0;i<musics.size();i++)
+        {
+            final Media media = new Media(getClass().getResource(musics.get(i)).toString());
+            final MediaPlayer mediaPlayer = new MediaPlayer(media);
+            
+            players.add(mediaPlayer);
+        }
+        long seed = System.nanoTime();
+        Collections.shuffle(players,new Random(seed));
+        
+        for(int i=0;i<players.size();i++)
+        {
+            MediaPlayer player=players.get(i);
+             MediaPlayer nextPlayer;
+            if(i==players.size()-1){
+                nextPlayer=players.get(0);
+            }else{
+                nextPlayer=players.get(i+1);
+            }
+            
+            player.setOnEndOfMedia(new Runnable() {
+               @Override public void run() { 
+                   player.stop();
+                   nextPlayer.play();
+            }
+            });
+        }
+    }
     
     private MenuBar createMenu()
     { 
@@ -198,7 +240,7 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
         int j=0;
         for(LevelModel level :aplicationModel.getLevels())
         {
-            MinimalLevelView minimalLevel= new MinimalLevelView(level.getLevelId(), level.getLevelNumber(),aplicationModel.getMaxSolvedLevel());
+            MinimalLevelView minimalLevel= new MinimalLevelView(level.getLevelNumber(),aplicationModel.getMaxSolvedLevel(),i,j);
             minimalLevel.setLevelSelectedEventListener(this);
             grid.add(minimalLevel,j,i);
 
@@ -210,9 +252,7 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
             }
         }  
                 
-       // grid.setHgap(25);
-       // grid.setVgap(25);
-        grid.setPadding(new Insets(20, 10, 10, 50));
+        grid.setPadding(new Insets(5, 10, 5, 50));
         return grid;
     }
     
@@ -237,8 +277,6 @@ public class IzaTibi6Honap extends Application implements LevelSelectedEventList
         {
             this.aplicationModel.setMaxSolvedLevel(levelNr+1);
         }
-        /*FinishLevelView finishLevelView=new FinishLevelView(levelNr);
-        finishLevelView.setLevelSelectedEventListener(this);
-        borderPane.setCenter(finishLevelView);*/
+        start(stage);
     }    
 }
